@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+export PROJECT_HOME=$PWD
+PROJECT_NAME=$(basename "${PROJECT_HOME}")
+export PROJECT_NAME
+export PROJECT_CONFIG_HOME="${PROJECT_HOME}/.config"
+export PROJECT_DATA_HOME="${PROJECT_HOME}/.local/share"
+export PROJECT_VAR_HOME="${PROJECT_HOME}/.local/var"
+export PROJECT_RUNTIME_DIR="${PROJECT_VAR_HOME}/run"
+
+PATH=${PROJECT_HOME}/scripts:$PATH
+
+export LANG='en_US.UTF-8'
+
+export PGHOST="${PROJECT_RUNTIME_DIR}/postgresql"
+export PGUSER="$USER"
+export PGDATABASE="${PROJECT_NAME}"
+export PGDATA="${PROJECT_VAR_HOME}/lib/postgresql"

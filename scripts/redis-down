@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+${DEBUG:-}
+
+redis-cli -s "${PROJECT_RUNTIME_DIR}/redis/redis.sock" shutdown

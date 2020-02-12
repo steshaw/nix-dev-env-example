@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+${DEBUG:-}
+
+mkdir -p "${PROJECT_RUNTIME_DIR}/redis"
+mkdir -p "${PROJECT_VAR_HOME}/lib/redis"
+mkdir -p "${PROJECT_VAR_HOME}/log"
+mkdir -p "${PROJECT_VAR_HOME}/tmp/redis"
+
+template="${PROJECT_CONFIG_HOME}/redis/redis.conf.template"
+conf="${PROJECT_VAR_HOME}/tmp/redis/redis.conf"
+envsubst <"${template}" >"${conf}"
+redis-server "${conf}"

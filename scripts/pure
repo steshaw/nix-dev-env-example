@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+nix-shell --pure "${PROJECT_CONFIG_HOME}/nix/shell.nix" "$@"

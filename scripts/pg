@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+${DEBUG:-}
+
+log_dir=${PROJECT_VAR_HOME}/log
+mkdir -p "${log_dir}"
+log_file=${log_dir}/postgresql.log
+
+pg_dir=${PROJECT_RUNTIME_DIR}/postgresql
+mkdir -p "${pg_dir}"
+
+mkdir -p "${PGHOST}" # Domain sockets directory.
+
+start_postgres() {
+  if postgres_is_stopped; then
+    (
+      set -m
+      pg_ctl --log "$log_file" -o "-h '' -k ${PGHOST}" -w start >&2
+    )
+  fi
+}
+
+postgres_is_stopped() {
+  pg_ctl status >/dev/null
+  [[ $? == 3 ]]
+}
+
+case "${1:-}" in
+  up|start)
+    if [[ -d $PGDATA ]]; then
+      start_postgres
+    else
+      pg_ctl initdb -o '--auth=trust'
+      start_postgres
+      createdb "$PGDATABASE"
+    fi
+    ;;
+  down|dn|stop)
+    # shellcheck disable=SC2015
+    pg_ctl status && pg_ctl stop || true
+    ;;
+  *)
+    script_name=${BASH_SOURCE[0]##*/}
+    cat <<END
+Usage: ${script_name} <command>
+
+COMMANDS
+  up|start       Start PostgreSQL
+  down|dn|stop   Stop PostgreSQL
+END
+    exit 1
+    ;;
+esac
